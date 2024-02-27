@@ -1,0 +1,35 @@
+[colors]
+ansi = [
+  '#4b5164',
+  '#e14245',
+  '#5ca75b',
+  '#f6ab32',
+  '#4877b1',
+  '#a660c3',
+  '#5294e2',
+  '#a9a9aa',
+]
+brights = [
+  '#4b5164',
+  '#e14245',
+  '#5ca75b',
+  '#f6ab32',
+  '#4877b1',
+  '#a660c3',
+  '#5294e2',
+  '#a9a9aa',
+]
+
+background = '#2f343f'
+foreground = '#d3dae3'
+selection_bg = '#d3dae3'
+selection_fg = '#2f343f'
+compose_cursor = '#5294e2'
+cursor_bg = '#d3dae3'
+cursor_border = '#d3dae3'
+cursor_fg = '#2f343f'
+scrollbar_thumb = '#4b5164'
+split = '#4877b1'
+
+[metadata]
+name = 'Arc-Dark'

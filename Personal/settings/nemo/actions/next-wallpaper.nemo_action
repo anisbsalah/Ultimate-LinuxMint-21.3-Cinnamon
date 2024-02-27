@@ -1,0 +1,9 @@
+[Nemo Action]
+# Enables and de-pauses slideshow and selects next wall.
+Name=Next _Wallpaper
+Comment=Rotate desktop wallpaper
+Exec=<action_scripts/next_wallpaper.sh>
+Icon-Name=media-seek-forward-symbolic
+Selection=none
+Extensions=any;
+Conditions=desktop;

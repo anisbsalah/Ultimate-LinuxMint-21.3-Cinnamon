@@ -1,0 +1,8 @@
+[Nemo Action]
+Active=true
+Name=Compare with Meld
+Comment=Compares selected files or directories
+Exec=meld %F
+Icon-Name=meld
+Selection=m
+Extensions=any

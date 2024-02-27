@@ -1,0 +1,15 @@
+#!/bin/bash
+
+COLORSCHEME="${HOME}/.config/kitty/colors.conf"
+THEMES_DIR="${HOME}/.config/kitty/themes"
+
+items=($(for file in "${THEMES_DIR}"/*.conf; do echo "${file}" | sed -r "s/.+\/(.+)\..+/\1/"; done))
+# items=($(for file in "${THEMES_DIR}"/*.conf; do echo "${file}" | sed -r "s|.+/([^/]+)\..+|\1|"; done))
+
+options=()
+for item in "${items[@]}"; do
+	options+=("${item}")
+done
+
+CHOICE=$(printf '%s\n' "${options[@]}" | rofi -dmenu -i -l 10 -p 'Kitty Themes:') || exit
+cp "${THEMES_DIR}/${CHOICE}.conf" "${COLORSCHEME}"

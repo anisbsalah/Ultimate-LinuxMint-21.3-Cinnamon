@@ -1,0 +1,11 @@
+#!/bin/bash
+
+export SUDO_ASKPASS="${HOME}/.local/bin/yad_askpass.sh"
+
+yad --center --title="Power Menu" --width=325 --image="gnome-shutdown" \
+	--form --text="Select an action from the list below:\n\n" \
+	--field="Restart:FBTN" "systemctl reboot" \
+	--field="Shutdown:FBTN" "systemctl poweroff" \
+	--field="Logout:FBTN" "cinnamon-session-quit --logout --no-prompt" \
+	--field="Lock:FBTN" "cinnamon-screensaver-command -l" \
+	--button='Cancel!gtk-cancel:1' --close-on-unfocus

@@ -1,0 +1,137 @@
+#!/bin/sh
+set -euf
+
+spawn() {
+  exec setsid -f -- "$@" </dev/null >&0 2>&0
+}
+
+if [ -n "${TMUX-}" ]; then
+  execute() {
+    exec tmux new-window -a "$@"
+  }
+else
+  execute() {
+    exec "$@"
+  }
+fi
+
+if [ -n "${OPENER_CHOOSE-}" ]; then
+  choose() {
+    printf '%s\0' "$@" | fzf --read0 --layout=reverse
+  }
+else
+  choose() {
+    printf '%s' "$1"
+  }
+fi
+
+case "$1" in
+  http://*|https://*)
+    if [ -n "${DISPLAY-}" ]; then
+      spawn firefox -- "$@"
+    else
+      exec lynx -- "$@"
+    fi
+    ;;
+esac
+
+for file; do
+  [ -e "$file" ]
+done
+
+ext="$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')"
+ext="${ext##*.}"
+case "$ext" in
+  7z|a|ace|alz|arc|arj|bz|bz2|cab|cpio|deb|gz|jar|\
+  lha|lrz|lz|lzh|lzma|lzo|rar|rpm|rz|t7z|tar|tbz|\
+  tbz2|tgz|tlz|txz|tZ|tzo|war|xz|Z|zip)
+    for file; do
+      aunpack -- "$file"
+    done
+    ;;
+  [1-8]|man)
+    exec man -- "$@"
+    ;;
+  pdf|ps|eps|djvu|djv|epub|cb[zr7t])
+    if [ -n "${DISPLAY-}" ]; then
+      spawn evince -- "$@"
+    fi
+    ;;
+  od[cbdfgipstm]|odft|ot[cgipsth]|do[ct]|do[ct]x|p[po]t|p[po]tx|\
+  xl[st]|xl[st]x)
+    if [ -n "${DISPLAY-}" ]; then
+      spawn libreoffice "$@"
+    fi
+    ;;
+  htm|html|xhtml)
+    if [ -n "${DISPLAY-}" ]; then
+      first="true"
+      for file; do
+        if [ -n "$first" ]; then
+          first=""
+          set --
+        fi
+        set -- "$@" "file://$file"
+      done
+      spawn firefox -- "$@"
+    else
+      exec lynx -- "$@"
+    fi
+    ;;
+  svg)
+    if [ -n "${DISPLAY-}" ]; then
+      case "$(choose inkview inkscape)" in
+        inkview) spawn inkview -- "$@";;
+        inkscape) spawn inkscape -- "$@";;
+        *) exit;;
+      esac
+    fi
+    ;;
+  mid|midi)
+    exec fluidsynth -li -a alsa -m alsa_seq /usr/share/soundfonts/FluidR3_GM.sf2 -- "$@"
+    ;;
+  cue)
+    spawn vlc -- "$@"
+    ;;
+  swf)
+    if [ -n "${DISPLAY-}" ]; then
+      spawn sh -c '
+        for file; do
+          flashplayer "$file"
+        done' flashplayer "$@"
+    fi
+    ;;
+esac
+
+mime="$(file -Lb --mime-type -- "$1")"
+case "$mime" in
+  image/*)
+    if [ -n "${DISPLAY-}" ]; then
+      case "$(choose nsxiv gimp)" in
+        nsxiv)
+          if [ "$#" -eq 1 ] && [ "$(printf '%.1s' "$(basename -- "$1")")" != . ]; then
+            dir="$(readlink -f -- "$(dirname -- "$1")")"
+            n="$(find -L "$dir" -maxdepth 1 -not -path '*/.*' -type f -print0 | sort -z | grep -znF -m 1 -- "$1" | cut -s -d: -f1)"
+            spawn nsxiv -a -n "$n" -- "$dir"
+          else
+            spawn nsxiv -a -- "$@"
+          fi
+          ;;
+        gimp) spawn gimp -- "$@";;
+        *) exit;;
+      esac
+    fi
+    ;;
+  audio/*)
+    spawn vlc -- "$@"
+    ;;
+  video/*)
+    spawn vlc -- "$@"
+    ;;
+esac
+
+case "$(choose editor pager)" in
+  editor) execute $EDITOR -- "$@";;
+  pager) execute $PAGER -- "$@";;
+  *) exit;;
+esac

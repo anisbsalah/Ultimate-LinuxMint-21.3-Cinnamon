@@ -1,0 +1,89 @@
+######################################################################################################
+#################                          Snapper Commands                          #################
+######################################################################################################
+
+### List snapper configs
+$ snapper list-configs
+
+### List snapshots of the configuration "root
+$ snapper -c root ls
+$ snapper -c root list
+
+
+### Shows the changed and modified files
+$ snapper status 2..3
+
+
+### Undo the changement
+$ snapper undochange 2..3
+
+
+### Reverse the undo
+$ snapper undochange 3..2
+
+*****************************************************************************************************
+
+### Get the default subvol:
+$ sudo btrfs subvolume get-default /
+$ sudo btrfs su get-def /
+
+
+### Get the id:
+$ btrfs inspect-internal rootid /
+$ btrfs inspect-internal rootid /home
+$ btrfs inspect-internal rootid /.snapshots/1/snapshot
+
+
+### Set @ as the default subvol 
+$ sudo btrfs subvolume set-default the_root_id /
+
+*****************************************************************************************************
+
+### Display information about the Btrfs filesystem that is mounted at the root directory / or about any snapshot
+$ btrfs pro get -ts /
+$ btrfs property get -ts /
+$ btrfs pro get -ts /.snapshots/1/snapshot
+
+
+### Make a snapshot writable
+$ sudo btrfs property set -ts /.snapshots/1/snapshot ro flase
+
+
+### Make a copy of an existing read-write snapshot
+$ sudo mkdir -p /.snapshots/1
+$ sudo btrfs subvolume snapshot /.snapshots/5/snappshot /.snaphsots/1/snapshot
+$ sudo cp /.snapshots/5/info.xml /.snapshots/1/
+--> and edit it with nano to make the description in the info.xml reflect the new intention of our new snapshot.
+
+
+### Rollback
+$ sudo snapper --ambit classic rollback
+
+
+######################################################################################################
+################# Snapper Restore from the arch iso	[ermanno tutorial]
+######################################################################################################
+
+$ ROOT_BTRFS_FS=$(df --output=source / | tail -n 1)
+
+$ mount $ROOT_BTRFS_FS /mnt
+
+$ nano /mnt/@snapshots/*/info.xml  # --> (alt + <) to navigate the files and find the number of the snapshot that you want to recover
+
+$ rm -rf /mnt/@
+
+$ btrfs subvol snapshot /mnt/@snapshots/2/snapshot /mnt/@     # Let's suppose we will restore snapshot nb 2
+
+--> After rebooting the machine will boot from the snapshot we restored
+
+######################################################################################################
+################# Snapper Restore with rollback command
+######################################################################################################
+
+$ sudo snapper --ambit classic rollback
+
+$ sudo btrfs property set -ts / ro flase
+
+$ sudo grub-mkconfig -o /boot/grub/grub.cfg
+
+######################################################################################################

@@ -1,0 +1,47 @@
+# Colors (Arc-Dark)
+
+# Default colors
+[colors.primary]
+background = '#383c4a'
+foreground = '#d3dae3'
+
+dim_foreground    = '#d3dae3'
+bright_foreground = '#d3dae3'
+
+# Cursor colors
+[colors.cursor]
+text   = '#383c4a'
+cursor = '#d3dae3'
+
+# Normal colors
+[colors.normal]
+black   = '#4b5164'
+red     = '#e14245'
+green   = '#5ca75b'
+yellow  = '#f6ab32'
+blue    = '#4877b1'
+magenta = '#a660c3'
+cyan    = '#5294e2'
+white   = '#a9a9aa'
+
+# Bright colors
+[colors.bright]
+black   = '#616981'
+red     = '#e16f7e'
+green   = '#add488'
+yellow  = '#fdc35f'
+blue    = '#8ca9bf'
+magenta = '#e2afec'
+cyan    = '#73c5e2'
+white   = '#fcfcfc'
+
+# Dim colors
+[colors.dim]
+black   = '#2c2f3a'
+red     = '#783228'
+green   = '#4b7c16'
+yellow  = '#b65619'
+blue    = '#2b486b'
+magenta = '#614a73'
+cyan    = '#1b668f'
+white   = '#63686d'

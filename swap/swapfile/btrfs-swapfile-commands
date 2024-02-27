@@ -1,0 +1,99 @@
+######################################################################################################
+#################################### Method 1
+######################################################################################################
+
+sudo su
+
+swapoff /swapfile
+
+rm /swapfile
+
+sed -i '\|^/swapfile|d' /etc/fstab # Removes any lines starting with /swapfile
+
+ROOT_BTRFS_FS=$(df --output=source / | tail -n 1)
+
+RAM_SIZE_B=$(free -b -t | awk 'NR == 2 {print $2}')
+
+mount "${ROOT_BTRFS_FS}" /mnt
+
+btrfs subvolume create /mnt/@swap
+
+umount /mnt
+
+mkdir /swap
+
+mount -o defaults,noatime,subvol=@swap "${ROOT_BTRFS_FS}" /swap
+
+truncate -s 0 /swap/swapfile
+
+chattr +C /swap/swapfile
+
+btrfs property set /swap/swapfile compression none # Not necessary in newest kernel
+
+fallocate -l "${RAM_SIZE_B}" /swap/swapfile
+
+chmod 0600 /swap/swapfile
+
+mkswap /swap/swapfile
+
+bash -c "echo UUID=$(lsblk -no UUID "${ROOT_BTRFS_FS}")	/swap	btrfs	defaults,noatime,subvol=@swap	0	0 >> /etc/fstab"
+
+bash -c "echo /swap/swapfile	swap	swap	defaults	0	0 >> /etc/fstab"
+
+mount -av
+
+swapon /swap/swapfile
+
+systemctl daemon-reload
+
+findmnt --verify --verbose
+
+######################################################################################################
+#################################### Method 2
+######################################################################################################
+
+sudo su
+
+swapoff /swapfile
+
+rm /swapfile
+
+sed -i '\|^/swapfile|d' /etc/fstab # Removes any lines starting with /swapfile
+
+ROOT_BTRFS_FS=$(df --output=source / | tail -n 1)
+
+RAM_SIZE_B=$(free -b -t | awk 'NR == 2 {print $2}')
+
+mount "${ROOT_BTRFS_FS}" /mnt
+
+btrfs subvolume create /mnt/@swap
+
+truncate -s 0 /mnt/@swap/swapfile
+
+chattr +C /mnt/@swap/swapfile
+
+btrfs property set /mnt/@swap/swapfile compression none # Not necessary in newest kernel
+
+fallocate -l "${RAM_SIZE_B}" /mnt/@swap/swapfile
+
+chmod 0600 /mnt/@swap/swapfile
+
+mkswap /mnt/@swap/swapfile
+
+mkdir /mnt/@/swap
+
+umount /mnt
+
+bash -c "echo UUID=$(lsblk -no UUID "${ROOT_BTRFS_FS}")	/swap	btrfs	defaults,noatime,subvol=@swap	0	0 >> /etc/fstab"
+
+bash -c "echo /swap/swapfile	swap	swap	defaults	0	0 >> /etc/fstab"
+
+mount -av
+
+swapon /swap/swapfile
+
+systemctl daemon-reload
+
+findmnt --verify --verbose
+
+######################################################################################################

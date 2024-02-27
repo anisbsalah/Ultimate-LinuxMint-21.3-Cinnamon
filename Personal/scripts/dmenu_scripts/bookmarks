@@ -1,0 +1,38 @@
+#!/bin/bash
+
+BROWSER="brave-browser"
+
+declare -a options=(
+	"1- https://youtube.com"
+	"2- https://facebook.com"
+	"3- https://reddit.com"
+	"4- https://monkeytype.com"
+	"5- https://reddit.com/r/unixporn"
+	"6- https://bleedinggreennation.com"
+	"7- https://tumblr.com"
+	"8- https://distrotoot.com/web/timelines/home"
+	"9- https://odysee.com"
+	"10- https://www.theverge.com/"
+	"11- http://www.omgubuntu.co.uk/"
+	"12- http://www.androidcentral.com/"
+	"13- http://www.imore.com/"
+	"14- http://www.macrumors.com/"
+	"15- http://appleinsider.com/"
+	"16- http://www.engadget.com/"
+	"17- https://www.dedoimedo.com/index.html"
+	"18- https://github.com"
+	"19- https://www.thurrott.com/"
+	"20- https://9to5linux.com/"
+	"Quit"
+)
+
+CHOICE=$(printf '%s\n' "${options[@]}" | dmenu -i -l 10 -p 'Bookmarks:')
+
+if [[ ${CHOICE} == Quit ]]; then
+	echo "Program Terminated." && exit 1
+elif [[ -n ${CHOICE} ]]; then
+	cfg=$(printf '%s\n' "${CHOICE}" | awk '{print $NF}')
+	${BROWSER} "${cfg}"
+else
+	echo "Program Terminated." && exit 1
+fi

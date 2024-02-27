@@ -1,0 +1,34 @@
+#!/bin/bash
+
+export SUDO_ASKPASS="${HOME}/.local/bin/zenity_askpass.sh"
+
+declare -a options=(
+	"adwaita"
+	"black"
+	"blue"
+	"bluegrey"
+	"breeze"
+	"brown"
+	"carmine"
+	"cyan"
+	"darkcyan"
+	"deeporange"
+	"green"
+	"grey"
+	"indigo"
+	"magenta"
+	"nordic"
+	"orange"
+	"palebrown"
+	"paleorange"
+	"pink"
+	"red"
+	"teal"
+	"violet"
+	"white"
+	"yaru"
+	"yellow"
+)
+
+CHOICE=$(printf '%s\n' "${options[@]}" | rofi -dmenu -i -l 10 -p 'Folders color for Papirus-Dark:') || exit
+papirus-folders -C "${CHOICE}" --theme Papirus-Dark

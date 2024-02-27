@@ -1,0 +1,23 @@
+#!/bin/bash
+
+export SUDO_ASKPASS="${HOME}/.local/bin/zenity_askpass.sh"
+
+CHOICE=$(zenity --list --title="Power Menu" --text="Select an action from the list below:" --height=220 --column="Actions" Lock Logout Restart Shutdown)
+case ${CHOICE} in
+"Restart")
+	systemctl reboot
+	;;
+"Shutdown")
+	systemctl poweroff
+	;;
+"Logout")
+	cinnamon-session-quit --logout --no-prompt
+	;;
+"Lock")
+	cinnamon-screensaver-command -l
+	;;
+*)
+	echo >&2 "Cancel"
+	exit 1
+	;;
+esac

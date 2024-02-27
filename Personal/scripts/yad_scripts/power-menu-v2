@@ -1,0 +1,40 @@
+#! /bin/bash
+
+export SUDO_ASKPASS="${HOME}/.local/bin/yad_askpass.sh"
+DE="${XDG_CURRENT_DESKTOP:-${DESKTOP_SESSION}}"
+
+action=$(yad --center --width=300 --image="gnome-shutdown" --title "Power Menu" \
+	--entry --text "Select an action:" \
+	--entry-text "Power Off" "Reboot" "Lock" "Logout" \
+	--button="OK!gtk-ok:0" --button="Close!gtk-close:1")
+
+ret=$?
+
+if [[ ${ret} -eq 0 ]]; then
+	case ${action} in
+	Power*) cmd="systemctl poweroff" ;;
+	Reboot*) cmd="systemctl reboot" ;;
+	Lock*)
+		case ${DE,,} in
+		*cinnamon*) cmd="cinnamon-screensaver-command --lock" ;;
+		*gnome*) cmd="gnome-screensaver-command --lock" ;;
+		*kde*) cmd="qdbus org.kde.ksmserver /KSMServer logout 1 0 3" ;;
+		*xfce*) cmd="xfce4-screensaver-command --lock" ;;
+		*) exit 1 ;;
+		esac
+		;;
+	Logout*)
+		case ${DE,,} in
+		*cinnamon*) cmd="cinnamon-session-quit --force" ;;
+		*gnome*) cmd="gnome-session-quit --force" ;;
+		*kde*) cmd="qdbus org.kde.ksmserver /KSMServer logout 0 0 0" ;;
+		*xfce*) cmd="xfce4-session-logout" ;;
+		*) exit 1 ;;
+		esac
+		;;
+	*) exit 1 ;;
+	esac
+	eval exec "${cmd}"
+else
+	exit 1
+fi

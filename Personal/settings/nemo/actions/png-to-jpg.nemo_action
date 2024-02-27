@@ -1,0 +1,9 @@
+[Nemo Action]
+Active=true
+Name=Convert PNG to JPG
+Comment=Convert PNG images to JPG format
+Exec=mogrify -format jpg %F
+Icon-Name=system-reboot
+Selection=notnone
+Extensions=png;
+Dependencies=mogrify;

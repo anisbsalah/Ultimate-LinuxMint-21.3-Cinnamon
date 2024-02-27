@@ -1,0 +1,35 @@
+[colors]
+ansi = [
+  '#282C34',
+  '#ED254E',
+  '#71F79F',
+  '#F9DC5C',
+  '#7CB7FF',
+  '#C74DED',
+  '#00C1E4',
+  '#DCDFE4',
+]
+brights = [
+  '#282C34',
+  '#ED254E',
+  '#71F79F',
+  '#F9DC5C',
+  '#7CB7FF',
+  '#C74DED',
+  '#00C1E4',
+  '#DCDFE4',
+]
+
+background = '#161925'
+foreground = '#C3C7D1'
+selection_bg = '#C3C7D1'
+selection_fg = '#161925'
+compose_cursor = '#00C1E4'
+cursor_bg = '#C3C7D1'
+cursor_border = '#C3C7D1'
+cursor_fg = '#161925'
+scrollbar_thumb = '#282C34'
+split = '#7CB7FF'
+
+[metadata]
+name = 'Sweet'

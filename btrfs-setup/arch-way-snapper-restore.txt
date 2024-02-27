@@ -1,0 +1,157 @@
+######################################################################################################
+#################              Snapper Restore The Arch Recommended Way              #################
+######################################################################################################
+
+******************************************************************************************************
+* default-subvol=ID 5 + grub-btrfs-overlayfs hook :
+******************************************************************************************************
+### Mount btrfs root-volume into /mnt
+$ sudo mount -o subvolid=5 /dev/sdaX /mnt  # sudo mount /dev/sda1 -o subvolid=5 /mnt
+or
+$ sudo mount -t btrfs -o subvol=/ /dev/disk/by-uuid/UUID_of_root_volume /mnt
+
+### UUID_of_root_volume can be obtained with: 
+$ lsblk -dno UUID /dev/sdaX
+or
+$ blkid -s UUID -o value /dev/sdaX
+
+
+$ cd /mnt
+
+$ sudo mv @ @.broken 
+
+### Find the number of the snapshot that you want to recover 
+$ sudo grep -r '<description>'  /mnt/@snapshots/*/info.xml
+
+### Create a new snapshot @ from snapshot number to be restored
+$ sudo btrfs subvolume snapshot @snapshots/number/snapshot @
+
+### Move the broken/old subvolume out of the way
+$ sudo btrfs subvolume delete @broken	# sudo rm -rf @broken
+
+$ cd
+
+$ sudo umount /mnt
+
+$ reboot
+
+******************************************************************************************************
+* default-subvol=ID 5 without grub-btrfs-overlayfs hook :
+******************************************************************************************************
+### Mount btrfs root-volume into /mnt
+$ sudo mount -o subvolid=5 /dev/sdaX /mnt
+or
+$ sudo mount -t btrfs -o subvol=/ /dev/disk/by-uuid/UUID_of_root_volume /mnt
+
+### UUID_of_root_volume can be obtained with: 
+$ lsblk -dno UUID /dev/sdaX
+or
+$ blkid -s UUID -o value /dev/sdaX
+
+
+$ cd /mnt
+
+$ sudo mv @ @.broken 
+
+### Find the number of the snapshot that you want to recover 
+$ sudo grep -r '<description>'  /mnt/@snapshots/*/info.xml
+
+### Create a new snapshot @ from snapshot number to be restored
+$ sudo btrfs subvolume snapshot @snapshots/number/snapshot @
+
+### Move the broken/old subvolume out of the way
+$ sudo btrfs subvolume delete @broken	# sudo rm -rf @broken
+
+$ cd
+
+$ sudo umount /mnt
+
+$ reboot
+
+******************************************************************************************************
+* default-subvol=@ without grub-btrfs-overlayfs hook :
+******************************************************************************************************
+### Mount btrfs root-volume into /mnt
+$ sudo mount -o subvolid=5 /dev/sdaX /mnt
+or
+$ sudo mount -t btrfs -o subvol=/ /dev/disk/by-uuid/UUID_of_root_volume /mnt
+
+### UUID_of_root_volume can be obtained with: 
+$ lsblk -dno UUID /dev/sdaX
+or
+$ blkid -s UUID -o value /dev/sdaX
+
+
+$ cd /mnt
+
+$ sudo mv @ @.broken 
+
+### Find the number of the snapshot that you want to recover 
+$ sudo grep -r '<description>'  /mnt/@snapshots/*/info.xml
+
+### Create a new snapshot @ from snapshot number to be restored
+$ sudo btrfs subvolume snapshot @snapshots/number/snapshot @
+
+### Get the id of the new @ subvol
+$ sudo btrfs inspect-internal rootid @
+or
+$ sudo btrfs subvolume list /
+
+### Set @ as the default subvol
+$ sudo btrfs subvolume set-default new_id /
+
+### Move the broken/old subvolume out of the way
+$ sudo btrfs subvolume delete @broken
+or 
+$ sudo rm -rf @broken
+
+$ cd
+
+$ sudo umount /mnt
+
+$ reboot
+
+******************************************************************************************************
+* default-subvol=@ + grub-btrfs-overlayfs hook :
+******************************************************************************************************
+### Mount btrfs root-volume into /mnt
+$ sudo mount -o subvolid=5 /dev/sdaX /mnt
+or
+$ sudo mount -t btrfs -o subvol=/ /dev/disk/by-uuid/UUID_of_root_volume /mnt
+
+### UUID_of_root_volume can be obtained with: 
+$ lsblk -dno UUID /dev/sdaX
+or
+$ blkid -s UUID -o value /dev/sdaX
+
+
+$ cd /mnt
+
+$ sudo mv @ @.broken 
+
+### Find the number of the snapshot that you want to recover 
+$ sudo grep -r '<description>'  /mnt/@snapshots/*/info.xml
+
+### Create a new snapshot @ from snapshot number to be restored
+$ sudo btrfs subvolume snapshot @snapshots/number/snapshot @
+
+### Get the id of the new @ subvol
+$ sudo btrfs inspect-internal rootid @
+or
+$ sudo btrfs subvolume list /mnt
+
+### Set @ as the default subvol
+$ sudo btrfs subvolume set-default new_id /mnt
+
+### Move the broken/old subvolume out of the way
+$ sudo btrfs subvolume delete @broken
+or 
+$ sudo rm -rf @broken
+
+$ cd
+
+$ sudo umount /mnt
+
+$ reboot
+
+######################################################################################################

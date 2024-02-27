@@ -1,0 +1,1 @@
+This version of grub-btrfs do need the grub-btrfs-update service to automatically update grub upon snapshot creation or deletion.

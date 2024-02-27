@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Get screen resolution
+resolution=$(xdpyinfo | awk '/dimensions/{print $2}')
+
+# Extract width and height
+width=$(echo "${resolution}" | cut -d 'x' -f 1)
+height=$(echo "${resolution}" | cut -d 'x' -f 2)
+
+# Calculate spacing, margin, padding, and font sizes based on the screen resolution
+box_spacing=$((width / 30))
+box_margin_top=$((height / 10))
+box_margin_bottom=$((height / 11))
+message_margin=$((width / 4))
+list_spacing=$((width / 48))
+general_padding=$((width / 64))
+element_padding_top=$((height / 30))
+element_padding_bottom=$((height / 75))
+element_radius=$((height / 20))
+general_radius=100%
+element_font_size=$((height / 25))
+
+# Generate the rofi configuration
+cat <<EOF >rofi-config.rasi
+* {
+    box-spacing:                 ${box_spacing} px;
+    box-margin:                  ${box_margin_top} px ${box_margin_bottom} px;
+    message-margin:              0px ${message_margin} px;
+    inputbar-spacing:            0px;
+    list-spacing:                ${list_spacing} px;
+    general-padding:             ${general_padding} px;
+    element-padding:             ${element_padding_top} px ${element_padding_bottom} px;
+    element-radius:              ${element_radius} px;
+    general-radius:              ${general_radius};
+    element-font:                "JetBrainsMono Nerd Font ${element_font_size}";
+}
+EOF

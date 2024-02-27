@@ -1,0 +1,8 @@
+{
+  "workbench.colorTheme": "Arc+",
+  "workbench.iconTheme": "material-icon-theme",
+  "editor.fontFamily": "'JetBrainsMono Nerd Font', 'Mononoki Nerd Font', 'Noto Mono', 'Hack', 'Droid Sans Mono', 'monospace', monospace",
+  "editor.fontSize": 18,
+  "editor.defaultFormatter": "trunk.io",
+  "editor.formatOnSave": true
+}

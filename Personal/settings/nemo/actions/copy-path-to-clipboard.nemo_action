@@ -1,0 +1,9 @@
+[Nemo Action]
+Active=true
+Name=Copy Path to Clipboard
+Comment=Copy Path of selected file(s) or directorie(s) to Clipboard
+Exec=<action_scripts/copy-path-to-clipboard.sh %F>
+Icon-Name=draw-path
+Selection=any
+Extensions=any
+Quote=double

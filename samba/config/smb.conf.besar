@@ -1,0 +1,42 @@
+[global]
+server string = Virtual Server
+netbios name = VSERVER
+workgroup = WORKGROUP
+security = user
+map to guest = Bad User
+name resolve order = bcast host
+include = registry
+passdb backend = tdbsam
+
+[home]
+path = /home/anisbsalah
+browsable = yes
+valid users = anisbsalah
+write list = anisbsalah
+read list = anisbsalah
+
+[srv]
+path = /mnt/srv
+browsable = yes
+valid users = anisbsalah
+write list = anisbsalah
+read list = anisbsalah
+
+[share]
+path = /mnt/srv/share
+browsable = yes
+writable = yes
+valid users = anisbsalah share
+create mask = 0755
+force create mode = 0755
+directory mask = 0755
+force directory mode = 0755
+
+[printers]
+comment = All Printers
+browseable = yes
+path = /var/spool/samba
+printable = yes
+guest ok = yes
+read only = no
+create mask = 0700

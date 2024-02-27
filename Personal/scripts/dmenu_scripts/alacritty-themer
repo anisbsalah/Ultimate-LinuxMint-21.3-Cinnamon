@@ -1,0 +1,15 @@
+#!/bin/bash
+
+COLORSCHEME="${HOME}/.config/alacritty/colors.toml"
+THEMES_DIR="${HOME}/.config/alacritty/themes"
+
+items=($(for file in "${THEMES_DIR}"/*.toml; do echo "${file}" | sed -r "s/.+\/(.+)\..+/\1/"; done))
+# items=($(for file in "${THEMES_DIR}"/*.toml; do echo "${file}" | sed -r "s|.+/([^/]+)\..+|\1|"; done))
+
+options=()
+for item in "${items[@]}"; do
+	options+=("${item}")
+done
+
+CHOICE=$(printf '%s\n' "${options[@]}" | dmenu -i -l 10 -p 'Alacritty Themes:') || exit
+cp "${THEMES_DIR}/${CHOICE}.toml" "${COLORSCHEME}"

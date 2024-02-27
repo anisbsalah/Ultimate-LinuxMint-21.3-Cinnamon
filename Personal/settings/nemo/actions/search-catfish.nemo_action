@@ -1,0 +1,8 @@
+[Nemo Action]
+Active=true
+Name=Search with Catfish
+Comment=Searches files with catfish
+Exec=catfish %F
+Icon-Name=catfish
+Selection=any
+Extensions=dir;

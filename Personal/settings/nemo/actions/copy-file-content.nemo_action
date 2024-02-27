@@ -1,0 +1,9 @@
+[Nemo Action]
+Active=true
+Name=Copy File Content to Clipboard
+Comment=Copies the content of the selected file to the clipboard
+Exec=xclip -selection clipboard %F
+Icon-Name=code-context
+Selection=notnone
+#Extensions=nodirs;
+Mimetypes=text/*;application/*;

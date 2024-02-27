@@ -1,0 +1,87 @@
+#!/bin/bash
+#set -e
+##################################################################################################################
+# Author  :  anisbsalah
+# Github  :  https://github.com/anisbsalah
+##################################################################################################################
+#
+# DO NOT JUST RUN THIS. EXAMINE AND JUDGE. RUN AT YOUR OWN RISK.
+#
+##################################################################################################################
+##################################################################################################################
+#
+# Learn Git with tutorials, news, and tips.
+# https://www.atlassian.com/git
+#
+##################################################################################################################
+
+### Problem solving commands.
+### Read before using it.
+# https://www.atlassian.com/git/tutorials/undoing-changes/git-reset
+# $ git reset --hard orgin/main
+# ONLY if you are very sure and no coworkers are on your github.
+
+# Force git to overwrite local files on pull - no merge
+# $ git fetch --all
+# $ git push --set-upstream origin main
+# $ git reset --hard orgin/main
+
+# Update a previous commit comment
+# https://www.atlassian.com/git/tutorials/rewriting-history
+# https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/changing-a-commit-message
+# $ git commit --amend -m "an updated commit message"
+# $ git push --force-with-lease origin main
+# $ git push --force origin main
+
+### Setting up git.
+# https://www.atlassian.com/git/tutorials/setting-up-a-repository/git-config
+# https://medium.com/clarusway/how-to-use-git-github-without-asking-for-authentication-always-passwordless-usage-of-private-git-8c32489bc2e9
+# https://blog.nillsf.com/index.php/2021/05/27/github-sso-using-password-protected-ssh-keys
+
+tput setaf 6
+echo "######################################################################################################"
+echo "################# Git Setup"
+echo "######################################################################################################"
+tput sgr0
+tput setaf 3
+echo "######################################################################################################"
+echo "Start"
+echo "######################################################################################################"
+tput sgr0
+
+git config --global pull.rebase false
+git config --global push.default simple
+git config --global color.ui true
+
+tput setaf 5
+echo "###################################################"
+echo "[?] User name:"
+echo "###################################################"
+tput sgr0
+
+read -er username
+git config --global user.name "${username}"
+
+tput setaf 5
+echo "###################################################"
+echo "[?] Email:"
+echo "###################################################"
+tput sgr0
+
+read -er email
+git config --global user.email "${email}"
+
+tput setaf 5
+echo "###################################################"
+echo "[?] Text editor:"
+echo "###################################################"
+tput sgr0
+
+read -er text_editor
+sudo git config --system core.editor "${text_editor}"
+
+tput setaf 2
+echo "######################################################################################################"
+echo "End"
+echo "######################################################################################################"
+tput sgr0

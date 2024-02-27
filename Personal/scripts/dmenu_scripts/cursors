@@ -1,0 +1,55 @@
+#!/bin/bash
+
+export SUDO_ASKPASS="${HOME}/.local/bin/zenity_askpass.sh"
+
+cursors=("Bibata Cursors" "Catppuccin Cursors" "Qogir Cursors" "Simp1e Cursors")
+
+cursor_choice=$(printf '%s\n' "${cursors[@]}" | dmenu -i -l 4 -p 'Cursors:')
+
+case "${cursor_choice}" in
+"Bibata Cursors")
+	themes=("↵ Go Back" "Bibata-Modern-Amber" "Bibata-Modern-Classic" "Bibata-Modern-Ice"
+		"Bibata-Original-Amber" "Bibata-Original-Classic" "Bibata-Original-Ice")
+	;;
+"Catppuccin Cursors")
+	themes=("↵ Go Back" "Catppuccin-Frappe-Dark-Cursors" "Catppuccin-Frappe-Light-Cursors" "Catppuccin-Latte-Dark-Cursors"
+		"Catppuccin-Latte-Light-Cursors" "Catppuccin-Macchiato-Dark-Cursors" "Catppuccin-Macchiato-Light-Cursors"
+		"Catppuccin-Mocha-Dark-Cursors" "Catppuccin-Mocha-Light-Cursors")
+	;;
+"Qogir Cursors")
+	themes=("↵ Go Back" "Qogir-Arc-Cursors" "Qogir-Catppuccin-Macchiato-Cursors" "Qogir-Cursors"
+		"Qogir-Dracula-Cyan-Cursors" "Qogir-Dracula-Green-Cursors" "Qogir-Dracula-Orange-Cursors"
+		"Qogir-Dracula-Pink-Cursors" "Qogir-Dracula-Purple-Cursors" "Qogir-Dracula-Red-Cursors"
+		"Qogir-Dracula-Teddy-Cursors" "Qogir-Dracula-Yellow-Cursors" "Qogir-Gruvbox-Black-Cursors"
+		"Qogir-Joris-Cursors" "Qogir-Manjaro-Cursors" "Qogir-Manjaro-White-Cursors" "Qogir-Sweet-Blue-Cursors" "Qogir-Sweet-Cursors" "Qogir-Sweet-Mars-Cursors"
+		"Qogir-Ubuntu-Cursors" "Qogir-Ubuntu-White-Cursors" "Qogir-White-Cursors")
+	;;
+"Simp1e Cursors")
+	themes=("↵ Go Back" "Simp1e" "Simp1e-Adw" "Simp1e-Adw-Dark" "Simp1e-Breeze" "Simp1e-Breeze-Dark"
+		"Simp1e-Catppuccin-Frappe" "Simp1e-Catppuccin-Latte" "Simp1e-Catppuccin-Macchiato"
+		"Simp1e-Catppuccin-Mocha" "Simp1e-Dark" "Simp1e-Gruvbox-Dark" "Simp1e-Gruvbox-Light"
+		"Simp1e-Mix-Dark" "Simp1e-Mix-Light" "Simp1e-Nord-Dark" "Simp1e-Nord-Light"
+		"Simp1e-Rose-Pine" "Simp1e-Rose-Pine-Dawn" "Simp1e-Rose-Pine-Moon"
+		"Simp1e-Solarized-Dark" "Simp1e-Solarized-Light" "Simp1e-Tokyo-Night"
+		"Simp1e-Tokyo-Night-Light" "Simp1e-Tokyo-Night-Storm")
+	;;
+*)
+	printf 'Invalid choice.\nProgram terminated.\n' >&2
+	exit 1
+	;;
+esac
+
+theme_choice=$(printf '%s\n' "${themes[@]}" | dmenu -i -l 7 -p "${cursor_choice}:")
+
+if [[ ${theme_choice} == "↵ Go Back" ]]; then
+	exec "${0}"
+	exit $?
+elif [[ -n ${theme_choice} ]]; then
+	gsettings set org.cinnamon.desktop.interface cursor-theme "${theme_choice}"
+	sudo find /usr/share/icons/default/ -name "index.theme" -exec sed -i "/Name=/s/.*/Name=${theme_choice}/" {} \;
+	sudo find /usr/share/icons/default/ -name "index.theme" -exec sed -i "/Inherits=/s/.*/Inherits=${theme_choice}/" {} \;
+	sudo sed -i "/cursor-theme-name=/s/.*/cursor-theme-name=${theme_choice}/" /etc/lightdm/slick-greeter.conf
+else
+	printf 'Invalid choice.\nProgram terminated.\n' >&2
+	exit 1
+fi

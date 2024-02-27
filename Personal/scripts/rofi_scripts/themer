@@ -1,0 +1,121 @@
+#!/bin/bash
+
+# Set the path to the Zenity askpass script
+export SUDO_ASKPASS="${HOME}/.local/bin/zenity_askpass.sh"
+
+# Define the config file paths
+rofi_config_path="${HOME}/.config/rofi/config.rasi"
+dmenu_config_path="${HOME}/.config/dmenu-flexipatch/config.def.h"
+
+# Define theme options
+options="\
+1- Arc-Dark
+2- Dracula
+3- Sweet"
+
+# Prompt user for theme choice
+CHOICE=$(printf '%s\n' "${options}" | rofi -dmenu -i -l 3 -p 'Themes:')
+
+# Check if choice is valid
+if [[ -z ${CHOICE} ]]; then
+	printf 'Invalid choice.\nNothing to do.\n' >&2
+	exit 1
+fi
+
+# Apply selected theme
+case ${CHOICE} in
+"1- Arc-Dark")
+	cursor_theme='Qogir-Cursors'
+	gtk_theme='Arc-Dark'
+	icon_theme='Papirus-Dark'
+	login_bg_image='/usr/share/backgrounds/AbS-Wallpapers/login_bg.jpg'
+	desktop_bg_image='/usr/share/backgrounds/AbS-Wallpapers/desktop_bg.jpg'
+	gedit_scheme='arc-dark'
+	alacritty_theme='arc-dark'
+	kitty_theme='Arc-Dark'
+	wezterm_theme='Arc-Dark'
+	kvantum_theme='KvArcDark'
+	rofi_theme='arc'
+	dmenu_theme='Arc-Dark'
+	papirus-folders -C blue --theme Papirus-Dark
+	;;
+"2- Dracula")
+	cursor_theme='Qogir-Dracula-Purple-Cursors'
+	gtk_theme='Dracula'
+	icon_theme='Papirus-Dark'
+	login_bg_image='/usr/share/backgrounds/Dracula-Wallpapers/dracula.png'
+	desktop_bg_image='/usr/share/backgrounds/Dracula-Wallpapers/dracula-ant.png'
+	gedit_scheme='dracula'
+	alacritty_theme='dracula'
+	kitty_theme='Dracula'
+	wezterm_theme='Dracula'
+	kvantum_theme='Dracula'
+	rofi_theme='dracula'
+	dmenu_theme='Dracula'
+	papirus-folders -C indigo --theme Papirus-Dark
+	;;
+"3- Sweet")
+	cursor_theme='Qogir-Sweet-Blue-Cursors'
+	gtk_theme='Sweet-Dark'
+	icon_theme='a-candy-beauty-icon-theme'
+	login_bg_image='/usr/share/backgrounds/Sweet-Wallpapers/Sweet-S1.png'
+	desktop_bg_image='/usr/share/backgrounds/Sweet-Wallpapers/Sweet-S3.png'
+	gedit_scheme='sweet-dark'
+	alacritty_theme='sweet'
+	kitty_theme='Sweet'
+	wezterm_theme='Sweet'
+	kvantum_theme='Sweet'
+	rofi_theme='sweet'
+	dmenu_theme='Sweet'
+	;;
+*)
+	printf 'Invalid choice.\nNothing to do.\n' >&2
+	exit 1
+	;;
+esac
+
+# Set Cinnamon desktop interface settings
+gsettings set org.cinnamon.desktop.interface cursor-theme "${cursor_theme}"
+gsettings set org.cinnamon.desktop.interface gtk-theme "${gtk_theme}"
+gsettings set org.cinnamon.desktop.interface icon-theme "${icon_theme}"
+gsettings set org.cinnamon.theme name "${gtk_theme}"
+
+# Set default cursor theme
+sudo find /usr/share/icons/default/ -name "index.theme" -exec sed -i "/Name=/s/.*/Name=${cursor_theme}/" {} \;
+sudo find /usr/share/icons/default/ -name "index.theme" -exec sed -i "/Inherits=/s/.*/Inherits=${cursor_theme}/" {} \;
+
+# Change environment variable
+sudo sed -i "/GTK_THEME=/s|.*|GTK_THEME=${gtk_theme}|" /etc/environment
+
+# Set LightDM slick-greeter settings
+sudo sed -i "/background=/s|.*|background=${login_bg_image}|" /etc/lightdm/slick-greeter.conf
+sudo sed -i "/icon-theme-name=/s|.*|icon-theme-name=${icon_theme}|" /etc/lightdm/slick-greeter.conf
+sudo sed -i "/cursor-theme-name=/s|.*|cursor-theme-name=${cursor_theme}|" /etc/lightdm/slick-greeter.conf
+
+# Set background images
+gsettings set org.cinnamon.desktop.background picture-uri "file://${desktop_bg_image}"
+
+# Set Gedit and X editor schemes
+gsettings set org.gnome.gedit.preferences.editor scheme "${gedit_scheme}"
+gsettings set org.x.editor.preferences.editor scheme "${gedit_scheme}"
+
+# Copy Alacritty and Kitty theme files
+cp "${HOME}/.config/alacritty/themes/${alacritty_theme}.toml" "${HOME}/.config/alacritty/colors.toml"
+cp "${HOME}/.config/kitty/themes/${kitty_theme}.conf" "${HOME}/.config/kitty/colors.conf"
+
+# Set wezterm theme
+sed -i "s/^\(\s*color_scheme = \).*/\1\"${wezterm_theme}\",/" "${HOME}/.config/wezterm/wezterm.lua"
+
+# Set Kvantum theme
+kvantummanager --set "${kvantum_theme}"
+sudo kvantummanager --set "${kvantum_theme}"
+
+# Set Rofi theme
+sed -i "/@import/s|.*|@import \"~/.config/rofi/colors/${rofi_theme}.rasi\"|" "${rofi_config_path}"
+
+# Set dmenu-flexipatch theme (search for the line containing /* ColorScheme to be used */ and the next line, and replace the #include line)
+sed -i -e "/\/\* ColorScheme to be used \*\//,+1 s|#include.*|#include \"color_schemes/${dmenu_theme}.h\"|" "${dmenu_config_path}"
+cd "${HOME}/.config/dmenu-flexipatch/" && sudo rm -rf config.h && sudo make install
+
+# Display notification
+notify-send "Appearance" "${gtk_theme} theme has been applied successfully.\nNow log out & log back in so that the changes take effect."

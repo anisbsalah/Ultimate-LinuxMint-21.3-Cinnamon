@@ -1,0 +1,32 @@
+#!/bin/bash
+
+scripts_dir="${HOME}/.local/bin"
+
+declare -a options=(
+	"Edit configs"
+	"Themes"
+	"Cursors"
+	"Papirus folders"
+	"Alacritty themes"
+	"Kitty themes"
+	"Wezterm themes"
+	"Shell prompt themes"
+	"Search engine"
+	"Bookmarks"
+)
+
+CHOICE=$(printf '%s\n' "${options[@]}" | dmenu -i -l 10 -p 'Scripts:') || exit
+
+case ${CHOICE} in
+"Edit configs") "${scripts_dir}"/edit-conf ;;
+"Themes") "${scripts_dir}"/themer ;;
+"Cursors") "${scripts_dir}"/cursors ;;
+"Papirus folders") "${scripts_dir}"/papirus-folders ;;
+"Alacritty themes") "${scripts_dir}"/alacritty-themer ;;
+"Kitty themes") "${scripts_dir}"/kitty-themer ;;
+"Wezterm themes") "${scripts_dir}"/wezterm-themer ;;
+"Shell prompt themes") "${scripts_dir}"/sh-prmpt-themer ;;
+"Search engine") "${scripts_dir}"/search-engine ;;
+"Bookmarks") "${scripts_dir}"/bookmarks ;;
+*) exit ;;
+esac

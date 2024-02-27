@@ -1,0 +1,11 @@
+{
+	"theme": "Arc Dark.sublime-theme",
+	"color_scheme": "Mariana.sublime-color-scheme",
+	"font_face": "JetBrainsMono Nerd Font",
+	"font_size": 13,
+	"word_wrap": "auto",
+	"ignored_packages":
+	[
+		"Vintage",
+	],
+}

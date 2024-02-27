@@ -1,0 +1,103 @@
+#!/bin/bash
+
+# Set variables
+BASHRC="${HOME}/.bashrc"
+FISH_CONFIG="${HOME}/.config/fish/config.fish"
+ZSHRC="${HOME}/.config/zsh/.zshrc"
+THEMES="~/.config/oh-my-posh/themes"
+
+# Define functions
+function set_oh_my_posh() {
+	declare -a options=("↵ Go Back" "Default" "di4am0nd" "illusi0n" "marcduiker" "robbyrussell")
+	THEME_CHOICE=$(printf '%s\n' "${options[@]}" | dmenu -i -l 6 -p 'Oh My Posh Themes:')
+	if [[ -z ${THEME_CHOICE} ]]; then
+		printf 'Invalid choice.\Program terminated.\n' >&2
+		exit 1
+	else
+		sed -i 's/^#eval "$(oh-my-posh init bash/eval "$(oh-my-posh init bash/' "${BASHRC}"
+		sed -i 's/^#oh-my-posh init fish/oh-my-posh init fish/' "${FISH_CONFIG}"
+		sed -i 's/^#eval "$(oh-my-posh init zsh/eval "$(oh-my-posh init zsh/' "${ZSHRC}"
+
+		sed -i 's/^eval "$(starship init bash/#eval "$(starship init bash/' "${BASHRC}"
+		sed -i 's/^starship init fish/#starship init fish/' "${FISH_CONFIG}"
+		sed -i 's/^eval "$(starship init zsh/#eval "$(starship init zsh/' "${ZSHRC}"
+
+		if [[ ${THEME_CHOICE} == "↵ Go Back" ]]; then
+			# Restart the script by invoking the shell (using ${SHELL}) with the script itself ("${0}") as an argument.
+			exec "${0}"
+			# Exit the current instance of the script with the same exit status as the new instance
+			exit $?
+		else
+			if [[ ${THEME_CHOICE} != "Default" ]]; then
+				if grep -q "oh-my-posh init bash --config ${THEMES}/.*.omp.json" "${BASHRC}"; then
+					sed -i "s|oh-my-posh init bash --config ${THEMES}/.*.omp.json|oh-my-posh init bash --config ${THEMES}/${THEME_CHOICE}.omp.json|g" "${BASHRC}"
+				else
+					sed -i "s|oh-my-posh init bash|oh-my-posh init bash --config ${THEMES}/${THEME_CHOICE}.omp.json|g" "${BASHRC}"
+				fi
+				if grep -q "oh-my-posh init fish --config ${THEMES}/.*.omp.json" "${FISH_CONFIG}"; then
+					sed -i "s|oh-my-posh init fish --config ${THEMES}/.*.omp.json|oh-my-posh init fish --config ${THEMES}/${THEME_CHOICE}.omp.json|g" "${FISH_CONFIG}"
+				else
+					sed -i "s|oh-my-posh init fish|oh-my-posh init fish --config ${THEMES}/${THEME_CHOICE}.omp.json|g" "${FISH_CONFIG}"
+				fi
+				if grep -q "oh-my-posh init zsh --config ${THEMES}/.*.omp.json" "${ZSHRC}"; then
+					sed -i "s|oh-my-posh init zsh --config ${THEMES}/.*.omp.json|oh-my-posh init zsh --config ${THEMES}/${THEME_CHOICE}.omp.json|g" "${ZSHRC}"
+				else
+					sed -i "s|oh-my-posh init zsh|oh-my-posh init zsh --config ${THEMES}/${THEME_CHOICE}.omp.json|g" "${ZSHRC}"
+				fi
+			else
+				if grep -q "oh-my-posh init bash --config ${THEMES}/.*.omp.json" "${BASHRC}"; then
+					sed -i "s|oh-my-posh init bash --config ${THEMES}/.*.omp.json|oh-my-posh init bash|g" "${BASHRC}"
+				fi
+				if grep -q "oh-my-posh init fish --config ${THEMES}/.*.omp.json" "${FISH_CONFIG}"; then
+					sed -i "s|oh-my-posh init fish --config ${THEMES}/.*.omp.json|oh-my-posh init fish|g" "${FISH_CONFIG}"
+				fi
+				if grep -q "oh-my-posh init zsh --config ${THEMES}/.*.omp.json" "${ZSHRC}"; then
+					sed -i "s|oh-my-posh init zsh --config ${THEMES}/.*.omp.json|oh-my-posh init zsh|g" "${ZSHRC}"
+				fi
+			fi
+		fi
+	fi
+}
+
+function set_starship() {
+	sed -i 's/^#eval "$(starship init bash/eval "$(starship init bash/' "${BASHRC}"
+	sed -i 's/^#starship init fish/starship init fish/' "${FISH_CONFIG}"
+	sed -i 's/^#eval "$(starship init zsh/eval "$(starship init zsh/' "${ZSHRC}"
+
+	sed -i 's/^eval "$(oh-my-posh init bash/#eval "$(oh-my-posh init bash/' "${BASHRC}"
+	sed -i 's/^oh-my-posh init fish/#oh-my-posh init fish/' "${FISH_CONFIG}"
+	sed -i 's/^eval "$(oh-my-posh init zsh/#eval "$(oh-my-posh init zsh/' "${ZSHRC}"
+}
+
+function unset_oh_my_posh() {
+	sed -i 's/^eval "$(oh-my-posh init bash/#eval "$(oh-my-posh init bash/' "${BASHRC}"
+	sed -i 's/^oh-my-posh init fish/#oh-my-posh init fish/' "${FISH_CONFIG}"
+	sed -i 's/^eval "$(oh-my-posh init zsh/#eval "$(oh-my-posh init zsh/' "${ZSHRC}"
+}
+
+function unset_starship() {
+	sed -i 's/^eval "$(starship init bash/#eval "$(starship init bash/' "${BASHRC}"
+	sed -i 's/^starship init fish/#starship init fish/' "${FISH_CONFIG}"
+	sed -i 's/^eval "$(starship init zsh/#eval "$(starship init zsh/' "${ZSHRC}"
+}
+
+# Display menu and handle user's choice
+options=("Default" "Oh My Posh" "Starship")
+CHOICE=$(printf '%s\n' "${options[@]}" | dmenu -i -l 3 -p 'Shell Prompt Themer:')
+case ${CHOICE} in
+"Default")
+	unset_oh_my_posh
+	unset_starship
+	;;
+"Oh My Posh")
+	set_oh_my_posh
+	;;
+"Starship")
+	set_starship
+	;;
+*)
+	# Invalid choice
+	printf 'Invalid choice.\Program terminated.\n' >&2
+	exit 1
+	;;
+esac

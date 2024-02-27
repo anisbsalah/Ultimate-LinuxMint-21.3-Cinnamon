@@ -1,0 +1,10 @@
+[Nemo Action]
+# Allows user to open current wallpaper.
+Name=Open Wallpaper
+Comment=Open current desktop wallpaper
+Exec=<action_scripts/open_wallpaper.sh>
+Icon-Name=image-x-generic-symbolic
+Selection=none
+Extensions=any;
+Conditions=desktop;
+Dependencies=xdg-open;gsettings;zenity;
