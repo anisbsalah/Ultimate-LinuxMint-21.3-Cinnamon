@@ -26,13 +26,9 @@ tput sgr0
 echo
 
 git clone https://github.com/jsayol/dark-mint-plymouth-theme.git /tmp/dark-mint-plymouth
-
 cd /tmp/dark-mint-plymouth || exit
-
 sudo ./install.sh
-
 # sudo plymouth-set-default-theme -R dark-mint
-
 sudo grub-mkconfig -o /boot/grub/grub.cfg
 
 echo
